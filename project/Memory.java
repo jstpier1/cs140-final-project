@@ -18,17 +18,11 @@ public class Memory {
 		return data[index];
 	}
 	
-	void setData(int index, int value) {
-		data[index] = value;
-	}
-	 /*
-	int setData(int index, int value)
+	void setData(int index, int value)
 	 {
 		 value = data[index];
 		 changedDataIndex = Math.max(changedDataIndex, index);
-		 return value;
 	 }
-	 */
 	
 	int getChangedDataIndex()
 	 {
@@ -45,15 +39,8 @@ public class Memory {
 		for(int i = 0; i < data.length; i++) {
 			data[i] = 0;
 		}
+		changedDataIndex = -1;
 	}
-	
-	/*
-	void clearData()
-	 {
-		 Arrays.fill(data, 0);
-		 changedDataIndex = -1;
-	 }
-	 */
 	
 	int[] getData(int min , int max) {
 		return Arrays.copyOfRange(data, min, max);

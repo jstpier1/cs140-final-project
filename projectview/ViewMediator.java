@@ -37,7 +37,7 @@ public class ViewMediator extends Observable {
 				currentState != States.NOTHING_LOADED) {
 			try {
 				model.step();
-			} catch (CodeAccessException e) {
+			} /*catch (CodeAccessException e) {
 				JOptionPane.showMessageDialog(frame, 
 					"Illegal access to code from line " + model.getPC() + "\n"
 							+ "Exception message: " + e.getMessage(),
@@ -45,7 +45,7 @@ public class ViewMediator extends Observable {
 							JOptionPane.OK_OPTION);
 				System.out.println("Illegal access to code from line " + model.getPC()); // just for debugging
 				System.out.println("Exception message: " + e.getMessage());			
-			} catch(ArrayIndexOutOfBoundsException e) {
+			} */catch(ArrayIndexOutOfBoundsException e) {
 				JOptionPane.showMessageDialog(frame, 
 						"Array index out of bounds from line " + model.getPC() + "\n"
 								+ "Exception message: " + e.getMessage(),
@@ -194,7 +194,7 @@ public class ViewMediator extends Observable {
 				currentState != States.NOTHING_LOADED) {
 			try {
 				model.step();
-			} catch (CodeAccessException e) {
+			} /*catch (CodeAccessException e) {
 				JOptionPane.showMessageDialog(frame, 
 					"Illegal access to code from line " + model.getPC() + "\n"
 							+ "Exception message: " + e.getMessage(),
@@ -202,7 +202,7 @@ public class ViewMediator extends Observable {
 							JOptionPane.OK_OPTION);
 				System.out.println("Illegal access to code from line " + model.getPC()); // just for debugging
 				System.out.println("Exception message: " + e.getMessage());			
-			} catch(ArrayIndexOutOfBoundsException e) {
+			} */catch(ArrayIndexOutOfBoundsException e) {
 				JOptionPane.showMessageDialog(frame, 
 						"Array index out of bounds from line " + model.getPC() + "\n"
 								+ "Exception message: " + e.getMessage(),

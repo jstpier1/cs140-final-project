@@ -6,14 +6,13 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Consumer;
-import static project.Instruction.*;
 
 public class MachineModel {
 	public final Map<Integer, Consumer<Instruction>> ACTION = new TreeMap<>();
 	private CPU cpu = new CPU();
 	private Memory memory = new Memory();
 	private boolean withGUI = false;
-	private boolean running = false;
+	private HaltCallback callBack;
 	
 	private class CPU {
 		private int accum;
@@ -24,11 +23,13 @@ public class MachineModel {
 	}
 	
 	public MachineModel() {
-		this(false);
+		this(false, null);
 	}
 	
-	public MachineModel(boolean value) {
+	public MachineModel(boolean value, HaltCallback cb) {
 		withGUI = value;
+		callBack = cb;
+		
 		//ACTION entry for "NOP"
 		ACTION.put(opcodes.get("NOP"), instr -> {
 			int flags = instr.opcode & 6; // remove parity bit that will have been verified
@@ -182,7 +183,7 @@ public class MachineModel {
 			}
 			cpu.pc++;			
 		});
-//ACTION entry for "JUMP"
+		//ACTION entry for "JUMP"
 		ACTION.put(opcodes.get("JUMP"), instr -> {
 			int flags = instr.opcode & 6; // remove parity bit that will have been verified
 			if(flags == 0) { // direct addressing
@@ -242,6 +243,33 @@ public class MachineModel {
 	int[] getData() {
 		return memory.getData();
 	}
+	public int getData(int index) {
+		return memory.getData(index);
+	}
+	int[] getData(int min, int max)
+	{
+		return memory.getData(min, max);
+	}
+	public Instruction getCode(int index)
+	{
+		return memory.getCode(index);
+	}
+	public void setCode(int i, Instruction j)
+	{
+		memory.setCode(i, j);
+	}
+	public Instruction[] getCode()
+	{
+		return memory.getCode();
+	}
+	public Instruction[] getCode(int min, int max)
+	{
+		return memory.getCode(min, max);
+	}
+	public int getProgramSize()
+	{
+		return memory.getProgramSize();
+	}
 	public int getPC() {
 		return cpu.pc;
 	}
@@ -254,16 +282,44 @@ public class MachineModel {
 	public void setPC(int i) {
 		cpu.pc = i;
 	}
+	public int getChangedDataIndex()
+	{
+		return memory.getChangedDataIndex();
+	}
+	public void setProgramSize(int i)
+	{
+		 memory.setProgramSize(i);
+	}
+	public void clear()
+	{
+		memory.clearCode();
+		memory.clearData();
+	}
+	
+	public void step()
+	{
+		try
+		{
+			Instruction instr = getCode(cpu.pc);
+			Instruction.checkParity(instr);
+			//instr -> ACTION.get(instr.opcode/8).accept(instr);
+			//FIX LAMDAH 
+		}
+		catch (Exception e)
+		{
+			halt();
+			throw e;
+		}
+	}
 	
 	public void halt() {
 		if(!withGUI)
 			System.exit(0);
-		else
-			running = false;
+		callBack.halt();
 	}
 
 	public static void main(String[] args) {
-		MachineModel model = new MachineModel(false);
+		MachineModel model = new MachineModel(false, null);
 		for(int i = 0; i < Memory.DATA_SIZE; i++)
 			model.memory.setData(i, 3*i);
 		System.out.println(Arrays.toString(model.memory.getData(0,20)));

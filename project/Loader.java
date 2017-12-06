@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 public class Loader
 {
-	public static String load(MachineModel model, File program) throws IOException
+	public static String load(MachineModel model, File program)
 	{
 		if(model == null || program == null)
 		{

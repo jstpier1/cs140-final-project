@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.io.File;
+import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -20,6 +21,7 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
 import project.Instruction;
+import project.Loader;
 import project.MachineModel;
 import project.Memory;
 
@@ -115,7 +117,7 @@ public class CodeViewPanel implements Observer {
 		}
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		ViewMediator mediator = new ViewMediator(); 
 		MachineModel model = new MachineModel();
 		CodeViewPanel panel = new CodeViewPanel(mediator, model);

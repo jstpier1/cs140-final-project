@@ -38,16 +38,16 @@ public class MenuBarBuilder implements Observer {
 		menu.add(assemble);
 		
 		load.setMnemonic(KeyEvent.VK_L);
-		//load.setAccelerator(KeyStroke.getKeyStroke(
-		//	KeyEvent.VK_L, ActionEvent.CTRL_MASK));
+		load.setAccelerator(KeyStroke.getKeyStroke(
+			KeyEvent.VK_L, ActionEvent.CTRL_MASK));
 		load.addActionListener(e -> mediator.loadFile());
 		menu.add(load);
 		
 		menu.addSeparator();
 		
 		exit.setMnemonic(KeyEvent.VK_E);
-		//exit.setAccelerator(KeyStroke.getKeyStroke(
-		//	KeyEvent.VK_E, ActionEvent.CTRL_MASK));
+		exit.setAccelerator(KeyStroke.getKeyStroke(
+			KeyEvent.VK_E, ActionEvent.CTRL_MASK));
 		exit.addActionListener(e -> mediator.exit());
 		menu.add(exit);
 		
@@ -55,12 +55,12 @@ public class MenuBarBuilder implements Observer {
 	}
 	
 	public JMenu createExecuteMenu() {
-		JMenu menu = new JMenu("File");
+		JMenu menu = new JMenu("Execute");
 		menu.setMnemonic(KeyEvent.VK_X); //IDK what key to use
 		
 		go.setMnemonic(KeyEvent.VK_G);
 		go.setAccelerator(KeyStroke.getKeyStroke(
-			KeyEvent.VK_M, ActionEvent.CTRL_MASK));
+			KeyEvent.VK_G, ActionEvent.CTRL_MASK));
 		go.addActionListener(e -> mediator.execute());
 		menu.add(go);
 		

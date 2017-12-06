@@ -157,22 +157,22 @@ public class FilesMgr {
 							"Source code error ",
 							JOptionPane.INFORMATION_MESSAGE);
 				}
-			} else {// outputExe Still null
-				JOptionPane.showMessageDialog(
-						mediator.getFrame(), 
-						"The output file has problems.\n" +
-								"Cannot assemble the program",
-								"Warning",
-								JOptionPane.OK_OPTION);
-			}
-		} else {// source file does not exist
-			JOptionPane.showMessageDialog(
-					mediator.getFrame(), 
-					"The source file has problems.\n" +
+				} else {// outputExe Still null
+					JOptionPane.showMessageDialog(
+							mediator.getFrame(), 
+							"The output file has problems.\n" +
 							"Cannot assemble the program",
 							"Warning",
-							JOptionPane.OK_OPTION);				
-		}
+							JOptionPane.OK_OPTION);
+				}
+			} else {// source file does not exist
+				JOptionPane.showMessageDialog(
+					mediator.getFrame(), 
+						"The source file has problems.\n" +
+						"Cannot assemble the program",
+						"Warning",
+						JOptionPane.OK_OPTION);				
+			}
 	}
 
 	public void loadFile() {
