@@ -55,4 +55,43 @@ public class Instruction {
 		for(String str : opcodes.keySet()) 
 			mnemonics.put(opcodes.get(str), str);
 	}
+	
+	public String getText()
+	{
+	      StringBuilder buff = new StringBuilder();
+	      buff.append(mnemonics.get(opcode/8));
+	      buff.append(" " + " ");
+	      int flags = opcode & 6;
+	      if(flags == 2) 
+	      {
+	    	  	buff.append('#');
+	      }
+	      if(flags == 4)
+	      {
+		      buff.append('@');
+	      }
+	      if(flags == 6)
+	      {
+	    	  	buff.append('&');
+	      }
+	      buff.append(Integer.toString(arg, 16));
+	      return buff.toString().toUpperCase();
+
+	}
+	
+	public String getBinHex()
+	{
+	      StringBuilder buff = new StringBuilder();
+	      String s = "00000000" + Integer.toString(opcode,2);
+	      buff.append(s.substring(s.length()-8));
+	      buff.append(" " + " ");
+	      buff.append(Integer.toHexString(arg));
+	      return buff.toString().toUpperCase();
+	}
+	
+	public String toString()
+	{
+		return "Instruction [" + Integer.toString(opcode,2) + ", " + Integer.toString(arg, 16)+"]";
+	}
+	
 }
