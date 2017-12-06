@@ -52,7 +52,10 @@ public class ControlPanel implements Observer {
 	
 	@Override
 	public void update(Observable arg0, Object arg1) {
-		// TODO Auto-generated method stub
+		runButton.setEnabled(mediator.getCurrentState().getRunPauseActive());
+		stepButton.setEnabled(mediator.getCurrentState().getStepActive());
+		clearButton.setEnabled(mediator.getCurrentState().getClearActive());
+		reloadButton.setEnabled(mediator.getCurrentState().getReloadActive());	
 	}
 
 }
