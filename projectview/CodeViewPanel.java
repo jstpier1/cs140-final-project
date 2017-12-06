@@ -4,11 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
+import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
@@ -39,7 +41,7 @@ public class CodeViewPanel implements Observer {
 		panel.setLayout(new BorderLayout());
 		Border border = BorderFactory.createTitledBorder(
 		        BorderFactory.createLineBorder(Color.BLACK),
-		        "Code Memory View ["+ lower +"-"+ upper +"]",
+		        "Code Memory View",
 		        TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION);
 		panel.setBorder(border);
 		
@@ -111,6 +113,20 @@ public class CodeViewPanel implements Observer {
 				bar.setValue(Math.max(0, bounds.y - 15*bounds.height));
 			}
 		}
+	}
+	
+	public static void main(String[] args) {
+		ViewMediator mediator = new ViewMediator(); 
+		MachineModel model = new MachineModel();
+		CodeViewPanel panel = new CodeViewPanel(mediator, model);
+		JFrame frame = new JFrame("TEST");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setSize(400, 700);
+		frame.setLocationRelativeTo(null);
+		frame.add(panel.createCodeDisplay());
+		frame.setVisible(true);
+		System.out.println(Loader.load(model, new File("factorial.pexe")));
+		panel.update(mediator, "Load Code");
 	}
 
 }
