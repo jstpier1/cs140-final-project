@@ -2,7 +2,6 @@ package projectview;
 
 import javax.swing.Timer;
 
-
 public class StepControl {
 	private static final int TICK = 500;
 	private boolean autoStepOn = false;
