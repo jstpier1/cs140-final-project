@@ -302,8 +302,7 @@ public class MachineModel {
 		{
 			Instruction instr = getCode(cpu.pc);
 			Instruction.checkParity(instr);
-			//instr -> ACTION.get(instr.opcode/8).accept(instr);
-			//FIX LAMDAH 
+			ACTION.get(instr.opcode/8).accept(instr);
 		}
 		catch (Exception e)
 		{
