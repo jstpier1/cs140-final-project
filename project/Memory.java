@@ -63,13 +63,17 @@ public class Memory {
 
 	 void setCode(int index, Instruction value)
 	 {
+		 System.out.println("index: " + index);
+		 System.out.println("value: " + value);
+		 System.out.println("code: " + code);
 		 code[index] = value;
 		 programSize = Math.max(programSize, index);
 	 }
 	 
 	 void clearCode()
 	 {
-		 code = null; 
+		 for(int i = 0; i < code.length; i++)
+			 code[i] = null; 
 	 }
 	 
 	 void setProgramSize(int programSize)
