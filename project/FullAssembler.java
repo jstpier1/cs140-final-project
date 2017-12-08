@@ -220,7 +220,7 @@ public class FullAssembler implements Assembler
 		        {
 		        		throw new Exception();
 		        }
-		     }
+		    }
 			catch(Exception e)
 			{
 				error.append("\nIllegal blank line in the source file" + counter);

@@ -20,8 +20,8 @@ public class Memory {
 	
 	void setData(int index, int value)
 	 {
-		 value = data[index];
-		 changedDataIndex = Math.max(changedDataIndex, index);
+		 data[index] = value;
+		 changedDataIndex = index;
 	 }
 	
 	int getChangedDataIndex()
@@ -63,7 +63,7 @@ public class Memory {
 
 	 void setCode(int index, Instruction value)
 	 {
-		 value = code[index];
+		 code[index] = value;
 		 programSize = Math.max(programSize, index);
 	 }
 	 

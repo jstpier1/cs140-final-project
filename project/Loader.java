@@ -56,7 +56,7 @@ public class Loader
 		}
 		while (buff.hasRemaining())
 		{
-			byte b = buff.get();
+			/*byte b = buff.get();
 			if(b<0)
 			{
 				break;
@@ -65,7 +65,7 @@ public class Loader
 			 if (!Instruction.noArgument(instr))
 			 {
 				 instr = new Instruction(b, buff.getInt());
-			 }
+			 }*/
 			 model.setData(buff.getInt(), buff.getInt());
 		}
 		String success = "success";
