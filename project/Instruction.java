@@ -6,6 +6,7 @@ import java.util.TreeMap;
 public class Instruction {
 	byte opcode;
 	int arg;
+	public static Map<String, Integer> opcodes = new TreeMap<>();
 	
 	public Instruction(byte opc, int argument) {
 		opcode = opc;
@@ -35,7 +36,6 @@ public class Instruction {
 		}
 	}
 	
-	public static Map<String, Integer> opcodes = new TreeMap<>();
 	public static Map<Integer, String> mnemonics = new TreeMap<>();
 	static {
 		opcodes.put("NOP", 0);

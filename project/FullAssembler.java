@@ -1,8 +1,5 @@
 package project;
 
-import java.util.Arrays;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.File;
@@ -10,14 +7,29 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Map;
-import java.util.TreeMap;
 
 public class FullAssembler implements Assembler
 {
 	public int assemble(String inputFileName, String outputFileName, StringBuilder error)
 	{
-		Scanner s = new Scanner(new File(inputFileName));
+		boolean blank = false;
+		int counter = 0;
+		int retVal = 0;
+		Scanner s = null;
+		
+		if(error == null)
+		{
+			throw new IllegalArgumentException("Coding error: the error buffer is null");
+		}
+		
+		File inputFile;
+		try {
+			inputFile = new File(inputFileName);
+			s = new Scanner(inputFile);
+		} catch (FileNotFoundException e1) {
+			error.append("\nError: Unable to open the input file");
+			retVal = -1;
+		}
 		ArrayList<String> code = new ArrayList<String>();
 		ArrayList<String> data = new ArrayList<String>();
 		boolean check = false;
@@ -41,17 +53,7 @@ public class FullAssembler implements Assembler
 			}
 		}
 		
-		
-		
-		boolean blank = false;
-		int lineNumber;
-		int counter = 0;
-		int retVal = 0;
-	
-		if(error == null)
-		{
-			throw new IllegalArgumentException("Coding error: the error buffer is null");
-		}
+		s.close();
 		
 		for(int i = 0; i<code.size(); i++)
 		{
@@ -67,13 +69,12 @@ public class FullAssembler implements Assembler
 		        }
 		        else if(blank == true && (line.trim().length() != 0))
 		        {
-		        		lineNumber = counter;
 		        		throw new Exception();
 		        }
 		     }
 			catch(Exception e)
 			{
-				error.append("\nIllegal blank line in the source file" + lineNumber);
+				error.append("\nIllegal blank line in the source file" + counter);
 				retVal = -1;
 			}
 			
@@ -86,7 +87,7 @@ public class FullAssembler implements Assembler
 			}
 			catch(Exception e)
 			{
-				error.append("\nLine starts with illegal white space" + lineNumber);
+				error.append("\nLine starts with illegal white space" + counter);
 				retVal = -1;
 			} 
 			
@@ -105,13 +106,13 @@ public class FullAssembler implements Assembler
 			}
 			catch(Exception e)
 			{
-				error.append("\nLine does not have DATA in upper case" + lineNumber);
+				error.append("\nLine does not have DATA in upper case" + counter);
 				retVal = -1;
 			}
 			
 			try
 			{
-				if(!(opcodes.keySet().contains(parts[0])))
+				if(!(Instruction.opcodes.keySet().contains(parts[0])))
 				{
 					throw new Exception();
 				}
@@ -124,14 +125,14 @@ public class FullAssembler implements Assembler
 			
 			try
 			{
-				if(opcodes.toUpperCase().contains(parts[0]) && !(opcodes.contains(parts[0])))
+				if(Instruction.opcodes.keySet().contains(parts[0].toUpperCase()) && !(Instruction.opcodes.keySet().contains(parts[0])))
 				{
 					throw new Exception();
 				}
 			}
 			catch (Exception e)
 			{
-				error.append("\nError on line " + (i+1) + ": mnemonic must be upper case" + lineNumber);
+				error.append("\nError on line " + (i+1) + ": mnemonic must be upper case" + counter);
 				retVal = -1;
 			}
 			
@@ -148,7 +149,7 @@ public class FullAssembler implements Assembler
 			}
 			catch (Exception e)
 			{
-				error.append("\nError on line " + (counter+1) + ": this mnemonic cannot take arguments" + lineNumber);
+				error.append("\nError on line " + (counter+1) + ": this mnemonic cannot take arguments" + counter);
 				retVal = -1;
 			}
 			
@@ -194,7 +195,7 @@ public class FullAssembler implements Assembler
 			} 
 			catch(NumberFormatException e)
 			{
-				error.append("\nError on line " + (i+1) + ": argument is not a hex number" + lineNumber);
+				error.append("\nError on line " + (i+1) + ": argument is not a hex number" + counter);
 				retVal = counter + 1;				
 			}
 			offset++;
@@ -217,13 +218,12 @@ public class FullAssembler implements Assembler
 		        }
 		        else if(blank == true && (line.trim().length() != 0))
 		        {
-		        		lineNumber = counter;
 		        		throw new Exception();
 		        }
 		     }
 			catch(Exception e)
 			{
-				error.append("\nIllegal blank line in the source file" + lineNumber);
+				error.append("\nIllegal blank line in the source file" + counter);
 				retVal = -1;
 			}
 			
@@ -236,7 +236,7 @@ public class FullAssembler implements Assembler
 			}
 			catch(Exception e)
 			{
-				error.append("\nLine starts with illegal white space" + lineNumber);
+				error.append("\nLine starts with illegal white space" + counter);
 				retVal = -1;
 			} 
 			
@@ -250,7 +250,7 @@ public class FullAssembler implements Assembler
 			}
 			catch(Exception e)
 			{
-				error.append("\nLine has a second separator" + lineNumber);
+				error.append("\nLine has a second separator" + counter);
 				retVal = -1;
 			}
 			
@@ -261,7 +261,7 @@ public class FullAssembler implements Assembler
 			}
 			catch(NumberFormatException e)
 			{
-				error.append("\nError on line " + (offset+counter+1) + ": data has non-numeric memory address" + lineNumber);
+				error.append("\nError on line " + (offset+counter+1) + ": data has non-numeric memory address" + counter);
 				retVal = offset + counter + 1;				
 			}
 		
