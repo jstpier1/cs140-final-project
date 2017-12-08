@@ -41,7 +41,6 @@ public class FullAssembler implements Assembler
 			if(temp.trim().equals("DATA"))
 			{
 				check = true;
-				code.add(temp);
 				
 			}
 			else if(!check)
