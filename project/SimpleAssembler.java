@@ -66,15 +66,16 @@ public class SimpleAssembler implements Assembler
 	 public int assemble(String inputFileName, String outputFileName, StringBuilder error)
 	 {
 		 Map<Boolean, List<String>> lists = null;
-		 //noArgCount = 0;
+		 noArgCount = 0;
+		 readingCode = true;
 	        try (Stream<String> lines = Files.lines(Paths.get(inputFileName))) {
 	            lists = lines
 	                    .filter(line -> line.trim().length() > 0)
 	                    .map(line -> line.trim())
 	                    .peek(line -> {if(line.toUpperCase().equals("DATA")) readingCode = false;})
 	                    .collect(Collectors.partitioningBy(line -> readingCode));
-	            System.out.println("\ntrue List " + lists.get(true));
-	            System.out.println("\nfalse List " + lists.get(false));
+	            //System.out.println("\ntrue List " + lists.get(true));
+	            //System.out.println("\nfalse List " + lists.get(false));
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }
