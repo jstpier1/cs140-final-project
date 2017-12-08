@@ -13,7 +13,7 @@ public class FullAssembler implements Assembler
 	public int assemble(String inputFileName, String outputFileName, StringBuilder error)
 	{
 		boolean blank = false;
-		int counter = 0;
+		int counter = 1;
 		int retVal = 0;
 		Scanner s = null;
 		
@@ -41,6 +41,7 @@ public class FullAssembler implements Assembler
 			if(temp.trim().equals("DATA"))
 			{
 				check = true;
+				code.add(temp);
 				
 			}
 			else if(!check)
@@ -51,6 +52,7 @@ public class FullAssembler implements Assembler
 			{
 				data.add(temp);
 			}
+			s.nextLine();
 		}
 		
 		s.close();
@@ -112,7 +114,7 @@ public class FullAssembler implements Assembler
 			
 			try
 			{
-				if(!(Instruction.opcodes.keySet().contains(parts[0])))
+				if(!(((Instruction.opcodes).keySet()).contains(parts[0])))
 				{
 					throw new Exception();
 				}
@@ -139,7 +141,7 @@ public class FullAssembler implements Assembler
 			
 			try
 			{
-				if(noArgument.contains(line.trim()))
+				if(noArgument.contains(parts[0]))
 				{
 					if(parts.length != 1)
 					{
@@ -155,7 +157,7 @@ public class FullAssembler implements Assembler
 			
 			try
 			{
-				if((parts.length <= 2) && !(noArgument.contains(line.trim())))
+				if((parts.length < 2) && !(noArgument.contains(parts[0])) && Instruction.opcodes.keySet().contains(parts[0]))
 				{
 					throw new Exception();
 				}
@@ -169,7 +171,7 @@ public class FullAssembler implements Assembler
 	
 			try
 			{
-				if((parts.length >= 2) && !(noArgument.contains(line.trim())))
+				if((parts.length > 2) && !(noArgument.contains(parts[0])))
 				{
 					throw new Exception();
 				}
@@ -204,7 +206,7 @@ public class FullAssembler implements Assembler
 		}
 			
 		
-		counter = 0;
+		counter = 1;
 		for(int i = 0; i<data.size(); i++)
 		{
 			String line = data.get(i);
@@ -256,13 +258,23 @@ public class FullAssembler implements Assembler
 			
 			try
 			{
-				int address = Integer.parseInt(parts[0],16);
-				int value = Integer.parseInt(parts[1],16);
+				if(parts.length != 2)
+					throw new Exception();
+				else
+				{
+					int address = Integer.parseInt(parts[0],16);
+					int value = Integer.parseInt(parts[1],16);
+				}
 			}
 			catch(NumberFormatException e)
 			{
 				error.append("\nError on line " + (offset+counter+1) + ": data has non-numeric memory address" + counter);
 				retVal = offset + counter + 1;				
+			}
+			catch(Exception e)
+			{
+				error.append("\nLine " + counter + " does not have two parts ");
+				retVal = -1;
 			}
 		
 		counter++;
