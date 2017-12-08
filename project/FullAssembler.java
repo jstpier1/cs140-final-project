@@ -41,7 +41,8 @@ public class FullAssembler implements Assembler
 			String temp = s.nextLine();
 			if(temp.trim().equals("DATA"))
 			{
-				check = true;				
+				check = true;	
+				data.add(temp);
 			}
 			else if(!check)
 			{
@@ -56,6 +57,7 @@ public class FullAssembler implements Assembler
 		s.close();
 		System.out.println(code);
 		String[] parts;
+		int blankLine = -1;
 		for(int i = 0; i<code.size(); i++)
 		{
 			String line = code.get(i);
@@ -64,21 +66,16 @@ public class FullAssembler implements Assembler
 	
 			try 
 			{
-		        if((line.trim().length() == 0))
+		        if((line.trim().length() == 0) && blank == false)
 		        {
 		        		blank = true;
+		        		blankLine = counter;
 		        }
 		        else if(blank == true && (line.trim().length() != 0))
 		        {
-		        		error.append("\nIllegal blank line in the source file" + counter);
-					retVal = -1;
-				}
-		  
-		        else if (line.charAt(0) == ' ' || line.charAt(0) == '\t')
-				{
-				     line = line.substring(1);
-				     error.append("\nLine starts with illegal white space" + counter);
-				     retVal = -1;
+		        		error.append("\nIllegal blank line in the source file" + blankLine);
+		        		retVal = -1;
+		        		blank = false;
 				}
 
 		        else if(line.trim().toUpperCase().equals("DATA"))
@@ -93,61 +90,70 @@ public class FullAssembler implements Assembler
 			
 		        if((parts[0].length() != 0))
 		        	{
-		        		if(!(((Instruction.opcodes).keySet()).contains(parts[0])))
-					{
-						error.append("\nError on line " + (i+1) + ": illegal mnemonic");
-						retVal = -1;	
-					}
-					
-			        else if(Instruction.opcodes.keySet().contains(parts[0].toUpperCase()) && !(Instruction.opcodes.keySet().contains(parts[0])))
-					{
-						error.append("\nError on line " + (i+1) + ": mnemonic must be upper case" + counter);
-						retVal = -1;	
-					}
-				
-			        else if(noArgument.contains(parts[0]))
-					{
-						if(parts.length != 1)
+
+				        if (line.charAt(0) == ' ' || line.charAt(0) == '\t')
 						{
-							error.append("\nError on line " + (counter+1) + ": this mnemonic cannot take arguments" + counter);
+						     line = line.substring(1);
+						     error.append("\nLine " + counter + " starts with illegal white space");
+						     retVal = -1;
+						}
+				        
+				        else if(Instruction.opcodes.keySet().contains(parts[0].toUpperCase()) && !(Instruction.opcodes.keySet().contains(parts[0])))
+						{
+							error.append("\nError on line " + counter + ": mnemonic must be upper case");
 							retVal = -1;	
 						}
-					}
-				
-					else if((parts.length > 2))
-					{
-						error.append("\nError on line " + (i+1) + ": this mnemonic has too many arguments");
-						retVal = -1;	
-					}
+				        
+				        else if(!(((Instruction.opcodes).keySet()).contains(parts[0])))
+						{
+							error.append("\nError on line " + counter + ": illegal mnemonic");
+							retVal = -1;	
+						}
 					
-					else if((parts.length < 2))
-					{
-						error.append("\nError on line " + (i+1) + ": this mnemonic is missing an argument");
-						retVal = -1;
-					}
+				        else if(noArgument.contains(parts[0]))
+						{
+							if(parts.length != 1)
+							{
+								error.append("\nError on line " + (counter) + ": this mnemonic cannot take arguments");
+								retVal = -1;	
+							}
+						}
+					
+						else if((parts.length > 2))
+						{
+							error.append("\nError on line " + counter + ": this mnemonic has too many arguments");
+							retVal = -1;	
+						}
+						
+						else if((parts.length < 2))
+						{
+							error.append("\nError on line " + counter + ": this mnemonic is missing an argument");
+							retVal = -1;
+						}
+		        	
+						else if(parts.length == 2)
+						{
+							int flags = 0;
+							 if (parts[1].charAt(0) == '#')
+							 {
+								 flags = 2; 
+								 parts[1] = parts[1].substring(1);
+							 }
+							 else if(parts[1].charAt(0) == '@')
+							 {
+								 flags = 4;
+								 parts[1] = parts[1].substring(1);
+							 }
+							 else if (parts[1].charAt(0) == '&')
+							 {
+								 flags = 6;
+								 parts[1] = parts[1].substring(1);
+							 }
+							int arg = Integer.parseInt(parts[1],16);
+							int opPart = 8*Instruction.opcodes.get(parts[0]) + flags;	
+							opPart += Instruction.numOnes(opPart)%2;
+						}
 		        	}
-				else if(parts.length == 2)
-				{
-					int flags = 0;
-					 if (parts[1].charAt(0) == '#')
-					 {
-						 flags = 2; 
-						 parts[1] = parts[1].substring(1);
-					 }
-					 else if(parts[1].charAt(0) == '@')
-					 {
-						 flags = 4;
-						 parts[1] = parts[1].substring(1);
-					 }
-					 else if (parts[1].charAt(0) == '&')
-					 {
-						 flags = 6;
-						 parts[1] = parts[1].substring(1);
-					 }
-					int arg = Integer.parseInt(parts[1],16);
-					int opPart = 8*Instruction.opcodes.get(parts[0]) + flags;	
-					opPart += Instruction.numOnes(opPart)%2;
-				}
 			} 
 			catch(NumberFormatException e)
 			{
@@ -160,7 +166,7 @@ public class FullAssembler implements Assembler
 		}
 			
 		
-		counter = 1;
+		//counter++; Is this right?
 		for(int i = 0; i<data.size(); i++)
 		{
 			String line = data.get(i);
@@ -168,48 +174,67 @@ public class FullAssembler implements Assembler
 			
 			try 
 			{
-		        if((line.trim().length() == 0))
-		        {
-		        		blank = true;
-		        }
-		        else if(blank == true && (line.trim().length() != 0))
-		        {
-		        		error.append("\nIllegal blank line in the source file" + counter);
-					retVal = -1;
-		        }
-		
-		        else if (line.charAt(0) == ' ' || line.charAt(0) == '\t')
-				{
-				     line = line.substring(1);
-				     error.append("\nLine " + counter + " starts with illegal white space" );
-				     retVal = -1;
-				}
-			
-		        else if((line.trim().equals("DATA")))
+		        if((line.trim().equals("DATA")) && i != 0)
 				{
 					line.trim().split("\\s+");
 					error.append("\nLine" + counter + " has a second separator" );
 					retVal = -1;	
 				}
+		        if((line.trim().length() == 0) && blank == false)
+		        {
+		        		blank = true;
+		        		blankLine = counter;
+		        }
+		        else if(blank == true && (line.trim().length() != 0))
+		        {
+		        		error.append("\nError on Line " + blankLine + " Illegal blank line in the source file ");
+		        		retVal = -1;
+		        		blank = false;
+				}
 		
-		        else if(parts.length != 2)
+		        else if (parts[0].length() != 0 && (line.charAt(0) == ' ' || line.charAt(0) == '\t'))
+				{
+				     line = line.substring(1);
+				     error.append("\nLine " + counter + " starts with illegal white space" );
+				     retVal = -1;
+				}
+		        
+				else if (parts[0].length() != 0 && i != 0)
+				{
+					int address = Integer.parseInt(parts[0],16);
+				}
+		
+		        else if(parts.length != 2 && parts[0].length() != 0 && i != 0)
 				{
 					error.append("\nLine " + counter + " does not have two parts ");
 					retVal = -1;		
 				}
-				else
+		        
+			}
+			catch(NumberFormatException e)
+			{
+				error.append("\nError on line " + (counter) + ": data has non-numeric memory address");
+				retVal = offset + counter + 1;				
+			}
+			try
+			{
+				if (parts[0].length() != 0 && i != 0)
 				{
-					int address = Integer.parseInt(parts[0],16);
 					int value = Integer.parseInt(parts[1],16);
 				}
 			}
 			catch(NumberFormatException e)
 			{
-				error.append("\nError on line " + (offset+counter+1) + ": data has non-numeric memory address" + counter);
+				error.append("\nError on line " + (counter) + ": data has non-numeric value");
+				retVal = offset + counter + 1;				
+			}
+			catch(ArrayIndexOutOfBoundsException e)
+			{
+				error.append("\nError on line " + (counter) + ": data is missing a value");
 				retVal = offset + counter + 1;				
 			}
 		
-		counter++;
+			counter++;
 		
 		}
 		
