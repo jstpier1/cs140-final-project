@@ -59,7 +59,7 @@ public class Memory {
 	 Instruction getCode(int index)
 	 {
 		 if(index < 0 | index >= CODE_SIZE)
-			 throw new CodeAccessException("Illegalaccess to code");
+			 throw new CodeAccessException("Illegal access to code");
 		 return code[index];
 	 }
 

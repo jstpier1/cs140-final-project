@@ -34,7 +34,7 @@ public class FullAssembler implements Assembler
 		ArrayList<String> code = new ArrayList<String>();
 		ArrayList<String> data = new ArrayList<String>();
 		boolean check = false;
-		int offset = 0;
+		int offset = 1;
 		
 		while(s.hasNextLine())
 		{
@@ -73,8 +73,8 @@ public class FullAssembler implements Assembler
 		        }
 		        else if(blank == true && (line.trim().length() != 0))
 		        {
-		        		error.append("\nIllegal blank line in the source file" + blankLine);
-		        		retVal = -1;
+		        		error.append("\nError on line " + blankLine + ": Illegal blank line in the source file");
+		        		retVal = counter;
 		        		blank = false;
 				}
 
@@ -82,8 +82,8 @@ public class FullAssembler implements Assembler
 				{
 					if(!(line.trim().equals("DATA")))
 					{
-						error.append("\nLine does not have DATA in upper case" + counter);
-						retVal = -1;	
+						error.append("\nLine " + counter + " does not have DATA in upper case");
+						retVal = counter;	
 					}
 					//line.trim().split("\\s+");
 				}
@@ -95,19 +95,19 @@ public class FullAssembler implements Assembler
 						{
 						     line = line.substring(1);
 						     error.append("\nLine " + counter + " starts with illegal white space");
-						     retVal = -1;
+						     retVal = counter;
 						}
 				        
 				        else if(Instruction.opcodes.keySet().contains(parts[0].toUpperCase()) && !(Instruction.opcodes.keySet().contains(parts[0])))
 						{
 							error.append("\nError on line " + counter + ": mnemonic must be upper case");
-							retVal = -1;	
+							retVal = counter;	
 						}
 				        
 				        else if(!(((Instruction.opcodes).keySet()).contains(parts[0])))
 						{
 							error.append("\nError on line " + counter + ": illegal mnemonic");
-							retVal = -1;	
+							retVal = counter;	
 						}
 					
 				        else if(noArgument.contains(parts[0]))
@@ -115,20 +115,20 @@ public class FullAssembler implements Assembler
 							if(parts.length != 1)
 							{
 								error.append("\nError on line " + (counter) + ": this mnemonic cannot take arguments");
-								retVal = -1;	
+								retVal = counter;	
 							}
 						}
 					
 						else if((parts.length > 2))
 						{
 							error.append("\nError on line " + counter + ": this mnemonic has too many arguments");
-							retVal = -1;	
+							retVal = counter;	
 						}
 						
 						else if((parts.length < 2))
 						{
 							error.append("\nError on line " + counter + ": this mnemonic is missing an argument");
-							retVal = -1;
+							retVal = counter;
 						}
 		        	
 						else if(parts.length == 2)
@@ -157,8 +157,8 @@ public class FullAssembler implements Assembler
 			} 
 			catch(NumberFormatException e)
 			{
-				error.append("\nError on line " + (i+1) + ": argument is not a hex number" + counter);
-				retVal = counter + 1;				
+				error.append("\nError on line " + counter + ": argument is not a hex number");
+				retVal = counter;				
 			}
 			offset++;
 			counter++;
@@ -177,8 +177,8 @@ public class FullAssembler implements Assembler
 		        if((line.trim().equals("DATA")) && i != 0)
 				{
 					line.trim().split("\\s+");
-					error.append("\nLine" + counter + " has a second separator" );
-					retVal = -1;	
+					error.append("\nLine " + counter + " has a second separator" );
+					retVal = counter;	
 				}
 		        if((line.trim().length() == 0) && blank == false)
 		        {
@@ -187,7 +187,7 @@ public class FullAssembler implements Assembler
 		        }
 		        else if(blank == true && (line.trim().length() != 0))
 		        {
-		        		error.append("\nError on Line " + blankLine + " Illegal blank line in the source file ");
+		        		error.append("\nError on Line " + blankLine + ": Illegal blank line in the source file ");
 		        		retVal = -1;
 		        		blank = false;
 				}
@@ -196,7 +196,7 @@ public class FullAssembler implements Assembler
 				{
 				     line = line.substring(1);
 				     error.append("\nLine " + counter + " starts with illegal white space" );
-				     retVal = -1;
+				     retVal = counter;
 				}
 		        
 				else if (parts[0].length() != 0 && i != 0)
@@ -207,14 +207,14 @@ public class FullAssembler implements Assembler
 		        else if(parts.length != 2 && parts[0].length() != 0 && i != 0)
 				{
 					error.append("\nLine " + counter + " does not have two parts ");
-					retVal = -1;		
+					retVal = counter;		
 				}
 		        
 			}
 			catch(NumberFormatException e)
 			{
 				error.append("\nError on line " + (counter) + ": data has non-numeric memory address");
-				retVal = offset + counter + 1;				
+				retVal = counter;				
 			}
 			try
 			{
@@ -226,12 +226,12 @@ public class FullAssembler implements Assembler
 			catch(NumberFormatException e)
 			{
 				error.append("\nError on line " + (counter) + ": data has non-numeric value");
-				retVal = offset + counter + 1;				
+				retVal = counter;				
 			}
 			catch(ArrayIndexOutOfBoundsException e)
 			{
 				error.append("\nError on line " + (counter) + ": data is missing a value");
-				retVal = offset + counter + 1;				
+				retVal = counter;				
 			}
 		
 			counter++;
@@ -240,10 +240,18 @@ public class FullAssembler implements Assembler
 		
 		try
 		{
-			File output = new File(outputFileName);
-			BufferedWriter bwr = new BufferedWriter(new FileWriter(output));
-			bwr.write(error.toString());
-			bwr.close();
+			if(retVal == 0)
+			{
+				SimpleAssembler makeOutput = new SimpleAssembler();
+				makeOutput.assemble(inputFileName, outputFileName, error);
+			}
+			else
+			{
+				File output = new File(outputFileName);
+				BufferedWriter bwr = new BufferedWriter(new FileWriter(output));
+				bwr.write(error.toString());
+				bwr.close();
+			}
 		}
 		catch (FileNotFoundException e)
 		{

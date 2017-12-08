@@ -29,8 +29,8 @@ public class FilesMgr {
 	private String executableDir; 
 	private Properties properties = null;
 	private File currentlyExecutingFile;
-	private Assembler assembler = new SimpleAssembler(); 
-	//private Assembler assembler = new FullAssembler(); 
+	//private Assembler assembler = new SimpleAssembler(); 
+	private Assembler assembler = new FullAssembler(); 
 
 	public FilesMgr(ViewMediator view) {
 		mediator = view;

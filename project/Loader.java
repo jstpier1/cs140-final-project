@@ -37,37 +37,27 @@ public class Loader
 		if(buff != null)
 		{
 			buff.rewind();
-		}
-		
-		int codeIndex = 0;
-		while (buff.hasRemaining())
-		{
-			byte b = buff.get();
-			if(b<0)
+			int codeIndex = 0;
+			while (buff.hasRemaining())
 			{
-				break;
+				byte b = buff.get();
+				if(b<0)
+				{
+					break;
+				}
+				Instruction instr = new Instruction(b, 0);
+				 if (!Instruction.noArgument(instr))
+				 {
+					 instr = new Instruction(b, buff.getInt());
+				 }
+				 model.setCode(codeIndex++, instr);
 			}
-			Instruction instr = new Instruction(b, 0);
-			 if (!Instruction.noArgument(instr))
-			 {
-				 instr = new Instruction(b, buff.getInt());
-			 }
-			 model.setCode(codeIndex++, instr);
-		}
-		while (buff.hasRemaining())
-		{
-			/*byte b = buff.get();
-			if(b<0)
+			
+			while (buff.hasRemaining())
 			{
-				break;
+				 model.setData(buff.getInt(), buff.getInt());
 			}
-			Instruction instr = new Instruction(b, 0);
-			 if (!Instruction.noArgument(instr))
-			 {
-				 instr = new Instruction(b, buff.getInt());
-			 }*/
-			 model.setData(buff.getInt(), buff.getInt());
-		}
+		} //maybe
 		String success = "success";
 		return success;
 		
