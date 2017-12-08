@@ -25,6 +25,7 @@ public class SimpleAssembler implements Assembler
 	
 		 if(noArgument.contains(parts[0]))
 		 {
+			 noArgCount += 1;
 			 int opPart = 8*Instruction.opcodes.get(parts[0]);
 			 opPart += Instruction.numOnes(opPart)%2;
 			 return new Instruction((byte)opPart,0);
@@ -50,6 +51,7 @@ public class SimpleAssembler implements Assembler
 			 }
 			 int arg = Integer.parseInt(parts[1],16);
 			 int opPart = 8*Instruction.opcodes.get(parts[0]) + flags;
+			 opPart += Instruction.numOnes(opPart)%2;
 			 return new Instruction((byte)opPart,arg);
 		 }
 		
@@ -64,6 +66,7 @@ public class SimpleAssembler implements Assembler
 	 public int assemble(String inputFileName, String outputFileName, StringBuilder error)
 	 {
 		 Map<Boolean, List<String>> lists = null;
+		 //noArgCount = 0;
 	        try (Stream<String> lines = Files.lines(Paths.get(inputFileName))) {
 	            lists = lines
 	                    .filter(line -> line.trim().length() > 0)
