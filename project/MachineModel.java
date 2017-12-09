@@ -46,10 +46,10 @@ public class MachineModel {
 				String fString = "(" + (flags%8 > 3?"1":"0") + (flags%4 > 1?"1":"0") + ")";
 				throw new IllegalInstructionException("Illegal flags for this instruction: " + fString);
 			}
-			if(cpu.accum == 1)
-				setAccum(0);
-			else if(cpu.accum == 0)
+			if(cpu.accum == 0)
 				setAccum(1);
+			else
+				setAccum(0);
 			cpu.pc++;			
 		});
 		//ACTION entry for "HALT"
