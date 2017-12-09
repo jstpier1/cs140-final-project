@@ -187,7 +187,6 @@ public class ViewMediator extends Observable {
 		currentState.enter();
 		setChanged();
 		notifyObservers(s);
-		model.setProgramSize(0);
 	}
 	public void execute() {
 		while (currentState != States.PROGRAM_HALTED && 

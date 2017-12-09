@@ -306,6 +306,8 @@ public class MachineModel {
 	{
 		memory.clearCode();
 		memory.clearData();
+		cpu.pc = 0;
+		cpu.accum = 0;
 	}
 	
 	public void step()
